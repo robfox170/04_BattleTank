@@ -1,6 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankPlayerController.h"
+#include "Engine/World.h"
+//#include "Camera/PlayerCameraManager.h"
+
 
 void ATankPlayerController::BeginPlay()
 {
@@ -38,13 +41,12 @@ void ATankPlayerController::AimTowardsCrosshair()
 	FVector HitLocation; // Out Parameter
 	if (GetSightRayHitLocation(HitLocation))
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("HitLocation: %s"), *HitLocation.ToString());
-
+		UE_LOG(LogTemp, Warning, TEXT("HitLocation: %s"), *HitLocation.ToString());
 	}
-
 }
 
 // Get world location of linetrace through crosshair, true if hits landscape
+// (Check out method APlayerController::GetHitResultAtScreenPosition for a simplified code)
 bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
 {
 	// Find the crosshair position in pixel coordinates
@@ -53,16 +55,12 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
 	auto ScreenLocation = FVector2D(ViewportSizeX * CrossHairXLocation, ViewportSizeY * CrossHairYLocation);
 
 	// De-project the screen position of the crosshair to a world direction (look direction)
-	FVector LookDirection;
+	FVector LookDirection; // Out Parameter
 	if (GetLookDirection(ScreenLocation, LookDirection))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("look direction: %s"), *LookDirection.ToString());
+		// Line-trace along that look direction and see what we hit (up to max. range)
+		GetLookVectorHitLocation(LookDirection, HitLocation);
 	}
-
-	// Line-trace along that look direction and see what we hit (up to max. range)
-
-	
-	
 	return true;
 }
 
@@ -75,6 +73,28 @@ bool ATankPlayerController::GetLookDirection(FVector2D ScreenLocation, FVector& 
 		CameraWorldLocation, 
 		LookDirection
 	);
+}
+
+bool ATankPlayerController::GetLookVectorHitLocation(FVector LookDirection, FVector& HitLocation) const
+{
+	FHitResult HitResult;
+	auto StartLocation = PlayerCameraManager->GetCameraLocation();
+	auto EndLocation = StartLocation + (LookDirection * LineTraceRange);
+	if (GetWorld()->LineTraceSingleByChannel(
+			HitResult,
+			StartLocation,
+			EndLocation,
+			ECollisionChannel::ECC_Visibility
+		)
+	)
+	{
+		HitLocation = HitResult.Location;
+		return true;
+	}
+	// Set default coordinates to 0 as a security in case the results are random when nothing is hit (sky for example), 
+	// although in Unreal 4.17 it seems unnecessary...
+	HitLocation = FVector(0); 
+	return false; // Line trace didn't succeed
 }
 
 
