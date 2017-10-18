@@ -36,17 +36,17 @@ void ATankPlayerController::AimTowardsCrosshair()
 {
 	if (!GetControlledTank()) { return; }
 
-	//FVector HitLocation; // Out Parameter
-	//if (GetSightRayHitLocation(HitLocation))
-	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("HitLocation: %s"), *HitLocation.ToString());
-	//}
+	FVector HitLocation; // Out Parameter
+	if (GetSightRayHitLocation(HitLocation))
+	{
+		GetControlledTank()->AimAt(HitLocation);
+	}
 
-	// Method call for alternative GetSightRayHitLocation using GetHitResultAtScreenPosition...
-	FVector HitLocation = FVector(0);
-	FString ObjectHit = "Nothing";
-	GetSightRayHitLocation(HitLocation, ObjectHit);
-	UE_LOG(LogTemp, Warning, TEXT("Object in range: %s Location: %s"), *ObjectHit, *HitLocation.ToString());
+	//// Method call for alternative GetSightRayHitLocation overload using GetHitResultAtScreenPosition...
+	//FVector HitLocation = FVector(0);
+	//FString ObjectHit = "Nothing";
+	//GetSightRayHitLocation(HitLocation, ObjectHit);
+	//UE_LOG(LogTemp, Warning, TEXT("Object in range: %s Location: %s"), *ObjectHit, *HitLocation.ToString());
 
 
 }
