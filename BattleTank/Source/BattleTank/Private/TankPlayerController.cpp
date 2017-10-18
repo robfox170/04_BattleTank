@@ -2,8 +2,6 @@
 
 #include "TankPlayerController.h"
 #include "Engine/World.h"
-//#include "Camera/PlayerCameraManager.h"
-
 
 void ATankPlayerController::BeginPlay()
 {
@@ -38,22 +36,30 @@ void ATankPlayerController::AimTowardsCrosshair()
 {
 	if (!GetControlledTank()) { return; }
 
-	FVector HitLocation; // Out Parameter
-	if (GetSightRayHitLocation(HitLocation))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("HitLocation: %s"), *HitLocation.ToString());
-	}
+	//FVector HitLocation; // Out Parameter
+	//if (GetSightRayHitLocation(HitLocation))
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("HitLocation: %s"), *HitLocation.ToString());
+	//}
+
+	// Method call for alternative GetSightRayHitLocation using GetHitResultAtScreenPosition...
+	FVector HitLocation = FVector(0);
+	FString ObjectHit = "Nothing";
+	GetSightRayHitLocation(HitLocation, ObjectHit);
+	UE_LOG(LogTemp, Warning, TEXT("Object in range: %s Location: %s"), *ObjectHit, *HitLocation.ToString());
+
+
 }
 
-// Get world location of linetrace through crosshair, true if hits landscape
-// (Check out method APlayerController::GetHitResultAtScreenPosition for a simplified code)
+/// Get world location of linetrace through crosshair, true if hits landscape
+/// (Check out alternative method overload below for simplified code)
 bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
 {
 	// Find the crosshair position in pixel coordinates
 	int32 ViewportSizeX, ViewportSizeY;
 	GetViewportSize(ViewportSizeX, ViewportSizeY);
 	auto ScreenLocation = FVector2D(ViewportSizeX * CrossHairXLocation, ViewportSizeY * CrossHairYLocation);
-
+	
 	// De-project the screen position of the crosshair to a world direction (look direction)
 	FVector LookDirection; // Out Parameter
 	if (GetLookDirection(ScreenLocation, LookDirection))
@@ -63,6 +69,32 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
 	}
 	return true;
 }
+
+/// Get world location of linetrace through crosshair, true if hits landscape
+/// Alternative method using APlayerController::GetHitResultAtScreenPosition instead of GetWorld->LineTraceSingleByChannel
+/// to obtain HitLocation directly, without helper methods GetLookDirection and GetLookVectorHitLocation
+bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation, FString& ObjectHit) const
+{
+	// Find the crosshair position in pixel coordinates
+	int32 ViewportSizeX, ViewportSizeY;
+	GetViewportSize(ViewportSizeX, ViewportSizeY);
+	auto ScreenLocation = FVector2D(ViewportSizeX * CrossHairXLocation, ViewportSizeY * CrossHairYLocation);
+
+	FHitResult HitResult;
+	bool bHit = GetHitResultAtScreenPosition(
+		ScreenLocation,
+		ECollisionChannel::ECC_Visibility,
+		false,
+		HitResult
+	);
+	if (bHit && HitResult.Distance <= LineTraceRange)
+	{
+		HitLocation = HitResult.ImpactPoint;
+		ObjectHit = HitResult.GetActor()->GetName();
+	}
+	return bHit;
+}
+
 
 bool ATankPlayerController::GetLookDirection(FVector2D ScreenLocation, FVector& LookDirection) const
 {

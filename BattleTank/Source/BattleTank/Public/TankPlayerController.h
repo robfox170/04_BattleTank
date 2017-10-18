@@ -26,6 +26,11 @@ private:
 
 	bool GetSightRayHitLocation(FVector& OutHitLocation) const;
 
+	/// Alternative method using APlayerController::GetHitResultAtScreenPosition instead of GetWorld->LineTraceSingleByChannel
+	/// to obtain HitLocation directly, without helper methods GetLookDirection and GetLookVectorHitLocation
+	bool GetSightRayHitLocation(FVector& OutHitLocation, FString& OutObjectHit) const;
+
+
 	UPROPERTY(EditAnywhere)
 	float CrossHairXLocation = 0.5;
 
@@ -37,7 +42,7 @@ private:
 	
 	bool GetLookDirection(FVector2D ScreenLocation, FVector& OutLookDirection) const;
 
-	bool GetLookVectorHitLocation(FVector LookDirection, FVector& HitLocation) const;
+	bool GetLookVectorHitLocation(FVector LookDirection, FVector& OutHitLocation) const;
 
 
 	
