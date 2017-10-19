@@ -15,7 +15,7 @@ class BATTLETANK_API ATankPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
-private:
+public:
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
@@ -30,7 +30,11 @@ private:
 	/// to obtain HitLocation directly, without helper methods GetLookDirection and GetLookVectorHitLocation
 	bool GetSightRayHitLocation(FVector& OutHitLocation, FString& OutObjectHit) const;
 
+	bool GetLookDirection(FVector2D ScreenLocation, FVector& OutLookDirection) const;
 
+	bool GetLookVectorHitLocation(FVector LookDirection, FVector& OutHitLocation) const;
+
+private:
 	UPROPERTY(EditAnywhere)
 	float CrossHairXLocation = 0.5;
 
@@ -40,10 +44,6 @@ private:
 	UPROPERTY(EditAnywhere)
 	float LineTraceRange = 1000000; // 10 km
 	
-	bool GetLookDirection(FVector2D ScreenLocation, FVector& OutLookDirection) const;
-
-	bool GetLookVectorHitLocation(FVector LookDirection, FVector& OutHitLocation) const;
-
-
+	
 	
 };
