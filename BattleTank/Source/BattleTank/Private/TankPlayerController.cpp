@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankPlayerController.h"
-#include "Engine/World.h"
+#include "Tank.h"
+
 
 void ATankPlayerController::BeginPlay()
 {
@@ -41,6 +42,8 @@ void ATankPlayerController::AimTowardsCrosshair()
 	{
 		GetControlledTank()->AimAt(HitLocation);
 	}
+	//UE_LOG(LogTemp, Warning, TEXT("Hit location: %s"), *HitLocation.ToString());
+
 
 	//// Method call for alternative GetSightRayHitLocation overload using GetHitResultAtScreenPosition...
 	//FVector HitLocation = FVector(0);
