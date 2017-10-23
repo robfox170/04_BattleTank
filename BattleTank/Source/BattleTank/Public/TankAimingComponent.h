@@ -8,8 +8,9 @@
 
 // forward declaration instead - but not same as - include, more efficient compilation, works for classes referenced as pointers,
 // like in headers, but if methods are called, a full include is necessary (like in TankAimingComponent.cpp)
-class UTankBarrel;
+class UTankBarrel; // Forward declaration
 
+// Holds barrel's properties and Elevate method
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BATTLETANK_API UTankAimingComponent : public UActorComponent
 {
