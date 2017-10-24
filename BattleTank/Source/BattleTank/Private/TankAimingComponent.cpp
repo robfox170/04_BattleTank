@@ -41,19 +41,20 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 	{
 		auto OurTankName = GetOwner()->GetName();
 		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
-		//UE_LOG(LogTemp, Warning, TEXT("%s aiming at %s"), *OurTankName, *AimDirection.ToString());
 		MoveBarrelTowards(AimDirection);
+		//UE_LOG(LogTemp, Warning, TEXT("%s aiming at %s"), *OurTankName, *AimDirection.ToString());
 	}
 	// if no solution is found do nothing
 }
 
 void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 {
-	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
 	auto AimAsRotator = AimDirection.Rotation();
-	auto DeltaRotator = BarrelRotator - AimAsRotator;
-	//UE_LOG(LogTemp, Warning, TEXT("Aim as rotator %s"), *DeltaRotator.ToString());
-	Barrel->Elevate(5);
+	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
+	auto DeltaRotator = AimAsRotator - BarrelRotator;
+	Barrel->Elevate(DeltaRotator.Pitch); // TODO: remove magic number
+	//UE_LOG(LogTemp, Warning, TEXT("Aim at pitch %f"), DeltaRotator.Pitch);
+
 }
 
 
