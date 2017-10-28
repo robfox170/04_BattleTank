@@ -51,7 +51,6 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 		auto OurTankName = GetOwner()->GetName();
 		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
 		MoveBarrelTowards(AimDirection);
-		//UE_LOG(LogTemp, Warning, TEXT("%s aiming at %s"), *OurTankName, *AimDirection.ToString());
 	}
 	// if no solution is found do nothing
 }
@@ -64,8 +63,6 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 	Barrel->Elevate(DeltaRotator.Pitch); 
 	// the barrel position is used for the turret too, so no need to have a separate MoveTurretTowards() method
 	Turret->Rotate(DeltaRotator.Yaw); 
-	//UE_LOG(LogTemp, Warning, TEXT("Aim at pitch %f"), DeltaRotator.Pitch);
-
 }
 
 
