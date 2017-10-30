@@ -53,18 +53,22 @@ void ATank::AimAt(FVector HitLocation)
 
 void ATank::Fire()
 {
-	if (!Barrel) { return; }
+	//bool IsReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
+	// if (Barrel && IsReloaded)
 
-	// Spawn a projectile at the socket location on the barrel
-	auto Projectile = GetWorld()->SpawnActor<AProjectile>(
-		ProjectileBlueprint,
-		Barrel->GetSocketLocation("Projectile"),
-		Barrel->GetSocketRotation("Projectile")
-	);
+	if (!Barrel) { return; } // pointer protected separately maybe better than above version?
+	if((FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds)
+	{
+		// Spawn a projectile at the socket location on the barrel
+		auto Projectile = GetWorld()->SpawnActor<AProjectile>(
+			ProjectileBlueprint,
+			Barrel->GetSocketLocation("Projectile"),
+			Barrel->GetSocketRotation("Projectile")
+			);
 
-	Projectile->LaunchProjectile(LaunchSpeed);
-	
-
+		Projectile->LaunchProjectile(LaunchSpeed);
+		LastFireTime = FPlatformTime::Seconds();
+	}
 		
 
 }
