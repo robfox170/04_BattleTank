@@ -7,7 +7,7 @@
 #include "TankBarrel.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS(meta = (BlueprintSpawnableComponent)) // By default is NOT spawnable, meta must be added so it shows in "Add component" menu for blueprints
 class BATTLETANK_API UTankBarrel : public UStaticMeshComponent
