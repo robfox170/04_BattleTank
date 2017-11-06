@@ -19,7 +19,10 @@ void ATankAIController::Tick(float DeltaTime)
 
 	if (!PlayerTank || !ControlledTank) { return; }
 	
+	MoveToActor(PlayerTank, AcceptanceRadius); // calls RequestDirectMove() in the TankMovementComponent
+
 	ControlledTank->AimAt(PlayerTank->GetActorLocation());
+
 	ControlledTank->Fire();
 	
 }
