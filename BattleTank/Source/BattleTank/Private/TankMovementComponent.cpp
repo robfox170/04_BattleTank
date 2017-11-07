@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright EmbraceIT Ltd
 
 #include "TankMovementComponent.h"
 #include "TankTrack.h"
@@ -23,7 +23,7 @@ void UTankMovementComponent::IntendTurnRight(float Throw)
 	RightTrack->SetThrottle(-Throw);
 }
 
-// For the AI Tanks, called directly by MoveToActor() in TankAIController (method inherited from AAIController)
+// For the AI Tanks, called directly by MoveToActor() in TankAIController (method inherited from AAIController using pathfinding logic)
 void UTankMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed)
 {
 	// No need to call Super:: as we are replacing the functionality here
