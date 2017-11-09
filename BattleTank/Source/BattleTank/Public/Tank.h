@@ -40,9 +40,10 @@ public:
 	void Fire();
 
 protected:
+	UPROPERTY(BlueprintReadOnly) // allows to drag into the editor
 	UTankAimingComponent* TankAimingComponent = nullptr;
 	
-	UPROPERTY(BlueprintReadOnly) // allows to drag into the editor
+	UPROPERTY(BlueprintReadOnly)
 	UTankMovementComponent* TankMovementComponent = nullptr;
 
 private:
