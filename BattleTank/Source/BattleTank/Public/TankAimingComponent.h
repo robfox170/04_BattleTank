@@ -6,6 +6,14 @@
 #include "Components/ActorComponent.h"
 #include "TankAimingComponent.generated.h"
 
+UENUM()
+enum class EFiringState : uint8
+{
+	Reloading,
+	Aiming,
+	Locked
+};
+
 // forward declaration instead - but not same as - include, more efficient compilation, works for classes referenced as pointers,
 // like in headers, but if methods are called, a full include is necessary (like in TankAimingComponent.cpp)
 class UTankBarrel;
@@ -27,13 +35,13 @@ public:
 
 	void AimAt(FVector HitLocation, float LaunchSpeed);
 
-
-
+protected: 
+	// to be accessible to a subclass in blueprint, can't be private, and has to be declared as UPROPERTY
+	UPROPERTY(BlueprintReadOnly, Category = "State")
+	EFiringState FiringState = EFiringState::Reloading;
 
 private:
-
 	UTankBarrel* Barrel = nullptr;
-
 	UTankTurret* Turret = nullptr;
 
 	void MoveBarrelTowards(FVector AimDirection);
