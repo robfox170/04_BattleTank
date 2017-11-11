@@ -37,7 +37,7 @@ public:
 protected: 
 	// to be accessible to a subclass in blueprint, can't be private, and has to be declared as UPROPERTY
 	UPROPERTY(BlueprintReadOnly, Category = "State")
-	EFiringState FiringState = EFiringState::Reloading;
+	EFiringState FiringState = EFiringState::Aiming;
 
 private:
 	UTankBarrel* Barrel = nullptr;
