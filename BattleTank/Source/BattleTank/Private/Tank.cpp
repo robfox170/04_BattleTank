@@ -13,12 +13,17 @@ ATank::ATank()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	//// No need to protects pointers when added at construction
+	//// No need to protect pointers when added at construction
 	//// Alternatively, spawn an instance in the editor directly by making the class blueprintspawnable, 
 	//TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("Aiming Component"));
-	
+	auto TankName = GetName();
+	UE_LOG(LogTemp, Warning, TEXT("%s DONKEY: Tank C++ Construct"), *TankName)
 }
 
+void ATank::BeginPlay()
+{
+	Super::BeginPlay(); // Needed for BP BeginPlay to run! Else, just delete the whole method so it won't override...
+}
 
 void ATank::AimAt(FVector HitLocation)
 {
