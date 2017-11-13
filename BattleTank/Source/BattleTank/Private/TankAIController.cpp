@@ -17,14 +17,17 @@ void ATankAIController::Tick(float DeltaTime)
 	auto ControlledTank = Cast<ATank>(GetPawn());
 	auto PlayerTank = Cast<ATank>(GetWorld()->GetFirstPlayerController()->GetPawn());
 
-	if (!PlayerTank || !ControlledTank) { return; }
-	
-	MoveToActor(PlayerTank, AcceptanceRadius); // calls RequestDirectMove() in the TankMovementComponent
+	if (!ensure(PlayerTank && ControlledTank)) { return; } 
 
-	ControlledTank->AimAt(PlayerTank->GetActorLocation());
+	// Alternative to above statement
+	//if (ensure(PlayerTank && ControlledTank))
+	//{
+		MoveToActor(PlayerTank, AcceptanceRadius); // calls RequestDirectMove() in the TankMovementComponent
 
-	//ControlledTank->Fire();
-	
+		ControlledTank->AimAt(PlayerTank->GetActorLocation());
+
+		//ControlledTank->Fire();
+	//}
 }
 
 

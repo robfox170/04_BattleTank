@@ -30,17 +30,14 @@ void ATank::BeginPlay()
 void ATank::AimAt(FVector HitLocation)
 {
 	// SUPER IMPORTANT, without it, will crash now that this component is not added in the constructor as a subobject, but spawned in blueprint
-	if (!TankAimingComponent) { return; }
+	if (!ensure(TankAimingComponent)) { return; }
 	TankAimingComponent->AimAt(HitLocation, LaunchSpeed);
 
 }
 
 void ATank::Fire()
 {
-	//bool IsReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
-	// if (Barrel && IsReloaded)
-
-	if (!Barrel) { return; } // pointer protected separately maybe better than above version?
+	if (!ensure(Barrel)) { return; }
 	if((FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds)
 	{
 		// Spawn a projectile at the socket location on the barrel
