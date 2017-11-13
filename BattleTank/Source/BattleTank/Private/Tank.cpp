@@ -16,15 +16,15 @@ ATank::ATank()
 	//// No need to protect pointers when added at construction
 	//// Alternatively, spawn an instance in the editor directly by making the class blueprintspawnable, 
 	//TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("Aiming Component"));
-	auto TankName = GetName();
-	UE_LOG(LogTemp, Warning, TEXT("%s DONKEY: Tank C++ Construct"), *TankName)
 }
 
 void ATank::BeginPlay()
 {
 	Super::BeginPlay(); // Needed for BP BeginPlay to run! Else, just delete the whole method so it won't override...
-	auto TankName = GetName();
-	UE_LOG(LogTemp, Warning, TEXT("%s DONKEY: Tank C++ BeginPlay"), *TankName)
+
+	TankAimingComponent = FindComponentByClass<UTankAimingComponent>(); // the AimingComponent has already been added in Blueprint at construction time
+	//auto TankName = GetName();
+	//UE_LOG(LogTemp, Warning, TEXT("%s DONKEY: Tank C++ BeginPlay"), *TankName)
 }
 
 void ATank::AimAt(FVector HitLocation)
