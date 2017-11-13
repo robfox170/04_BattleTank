@@ -6,9 +6,6 @@
 #include "AIController.h"
 #include "TankAIController.generated.h"
 
-// Forward declaration
-class ATank;
-
 /**
  * 
  */
@@ -23,6 +20,7 @@ public:
 	virtual void Tick(float DeltaTime) override;	
 
 private:
+
 	// How close can the AI tank get
 	float AcceptanceRadius = 3000;
 	

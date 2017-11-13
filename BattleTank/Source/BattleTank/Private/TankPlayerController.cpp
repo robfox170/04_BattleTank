@@ -1,14 +1,13 @@
 // Copyright EmbraceIT Ltd
 
 #include "TankPlayerController.h"
-#include "Tank.h"
 #include "TankAimingComponent.h"
 
 
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	auto AimingComponent = GetControlledTank()->FindComponentByClass<UTankAimingComponent>();
+	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
 	if (!ensure(AimingComponent)) { return; }
 	FoundAimingComponent(AimingComponent);
 }
@@ -19,22 +18,15 @@ void ATankPlayerController::Tick(float DeltaTime)
 	AimTowardsCrosshair();
 }
 
-
-ATank* ATankPlayerController::GetControlledTank() const
-{
-	// no need to protect this pointer with if(!...)...
-	//because the cast will fail if it's a null or invalid pointer
-	return Cast<ATank>(GetPawn());
-}
-
 void ATankPlayerController::AimTowardsCrosshair()
 {
-	if (!ensure(GetControlledTank())) { return; }
+	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+	if (!ensure(AimingComponent)) { return; }
 
 	FVector HitLocation; // Out Parameter
 	if (GetSightRayHitLocation(HitLocation))
 	{
-		GetControlledTank()->AimAt(HitLocation);
+		AimingComponent->AimAt(HitLocation);
 	}
 	//UE_LOG(LogTemp, Warning, TEXT("Hit location: %s"), *HitLocation.ToString());
 
