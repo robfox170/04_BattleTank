@@ -7,8 +7,10 @@
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+	// TODO: sort out what needs to be protected, the Pawn, the AimingComponent, in BeginPlay too or only in AimTowardsCrosshair?
+	//if (!ensure(GetPawn())) { return; } 
 	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
-	if (!ensure(AimingComponent)) { return; }
+	//if (!ensure(AimingComponent)) { return; }
 	FoundAimingComponent(AimingComponent);
 }
 
@@ -20,8 +22,11 @@ void ATankPlayerController::Tick(float DeltaTime)
 
 void ATankPlayerController::AimTowardsCrosshair()
 {
+	// protect the pointer BEFORE it gets used to find the AimingComponent, 
+	// else opening TankPlayerController_BP will crash the editor
+	if (!ensure(GetPawn())) { return; }
 	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
-	if (!ensure(AimingComponent)) { return; }
+	//if (!ensure(AimingComponent)) { return; }
 
 	FVector HitLocation; // Out Parameter
 	if (GetSightRayHitLocation(HitLocation))

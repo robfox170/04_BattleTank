@@ -6,6 +6,8 @@
 #include "GameFramework/PlayerController.h"
 #include "TankPlayerController.generated.h" // Must be the last include
 
+//class UTankAimingComponent;
+
 /**
  * Responsible for helping the player aim
  */
