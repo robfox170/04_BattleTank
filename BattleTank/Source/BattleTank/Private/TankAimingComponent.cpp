@@ -30,14 +30,18 @@ void UTankAimingComponent::BeginPlay()
 
 void UTankAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
 {
-	//Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	UE_LOG(LogTemp, Warning, TEXT("Aiming Comp. ticking"))
-
-	if ((FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds)
+	if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTimeInSeconds)
+	{
+		FiringState = EFiringState::Reloading;
+	}
+	else if(IsBarrelMoving())
+	{
+		FiringState = EFiringState::Aiming;
+	}
+	else
 	{
 		FiringState = EFiringState::Locked;
 	}
-
 	
 }
 
@@ -52,8 +56,7 @@ void UTankAimingComponent::Fire()
 {
 	if(FiringState != EFiringState::Reloading)
 	{
-		if (!ensure(Barrel)) { return; }
-		if (!ensure(ProjectileBlueprint)) { return; }
+		if (!ensure(Barrel) && !ensure(ProjectileBlueprint)) { return; }
 		// Spawn a projectile at the socket location on the barrel
 		auto Projectile = GetWorld()->SpawnActor<AProjectile>(
 			ProjectileBlueprint,
@@ -88,7 +91,7 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 	if(bHasAimSolution)
 	{
 		auto OurTankName = GetOwner()->GetName();
-		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
+		AimDirection = OutLaunchVelocity.GetSafeNormal();
 		MoveBarrelTowards(AimDirection);
 	}
 	// if no solution is found do nothing
@@ -103,6 +106,13 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 	Barrel->Elevate(DeltaRotator.Pitch); 
 	// the barrel position is used for the turret too, so no need to have a separate MoveTurretTowards() method
 	Turret->Rotate(DeltaRotator.Yaw); 
+}
+
+bool UTankAimingComponent::IsBarrelMoving()
+{
+	if (!ensure(Barrel)) { return false; }
+	return !(Barrel->GetForwardVector().Equals(AimDirection, .01f)); 
+	
 }
 
 
