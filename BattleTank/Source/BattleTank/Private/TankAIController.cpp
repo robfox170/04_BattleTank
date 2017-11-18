@@ -14,7 +14,6 @@ void ATankAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//auto ControlledTank = GetPawn();
 	auto PlayerTank = GetWorld()->GetFirstPlayerController()->GetPawn();
 	auto ControlledTank = GetPawn();
 
@@ -26,8 +25,11 @@ void ATankAIController::Tick(float DeltaTime)
 
 		AimingComponent->AimAt(PlayerTank->GetActorLocation());
 
-		AimingComponent->Fire();
-	//}
+		if (AimingComponent->GetFiringState() == EFiringState::Locked) // TODO: put this statement in Fire() method directly, so that all tanks are equal
+		{
+			AimingComponent->Fire();
+
+		}
 }
 
 

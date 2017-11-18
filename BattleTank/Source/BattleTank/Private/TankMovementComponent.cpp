@@ -40,7 +40,9 @@ void UTankMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool
 	// Note that order in the operation matters, because the result is oriented along the Z axis
 	auto RightThrow = FVector::CrossProduct(TankForward, AIForwardIntention).Z;
 	IntendTurnRight(RightThrow);
-	//UE_LOG(LogTemp, Warning, TEXT("Throw is %f "), RightThrow)
+	
+	//auto TankName = GetOwner()->GetName();
+	//UE_LOG(LogTemp, Warning, TEXT("%s : AIForwardIntention is %s "), *TankName, *(AIForwardIntention.ToString()))
 }
 
 

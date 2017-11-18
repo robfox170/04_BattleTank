@@ -37,6 +37,8 @@ public:
 
 	void AimAt(FVector HitLocation);
 
+	EFiringState GetFiringState() const;
+
 
 protected: 
 	// to be accessible to a subclass in blueprint, can't be private, and has to be declared as UPROPERTY
