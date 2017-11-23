@@ -4,6 +4,9 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "PhysicsEngine/RadialForceComponent.h"
+#include "Engine/World.h"
+#include "TimerManager.h"
+
 
 
 // Sets default values
@@ -39,7 +42,7 @@ void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	// Projectile is an actor, so the OnHit event must be registered with the collision mesh
+	// Projectile is an actor, so the delegate method OnHit for the hit event must be registered with the collision mesh
 	CollisionMesh->OnComponentHit.AddDynamic(this, &AProjectile::OnHit); 
 }
 
@@ -58,6 +61,20 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 	//UE_LOG(LogTemp, Warning, TEXT("LaunchBlast was deactivated: %s"), *bWasDeactivated)
 	ImpactBlast->Activate();
 	ExplosionForce->FireImpulse();
+
+	// Set the ImpactBlast component as root in order to destroy the Projectile mesh on impact and avoid it lingering in the world
+	SetRootComponent(ImpactBlast);
+	CollisionMesh->DestroyComponent();
+
+	FTimerHandle Timer; // not used, but needed as out parameter
+	GetWorld()->GetTimerManager().SetTimer(Timer, this, &AProjectile::OnTimerExpire, DestroyDelay, false);
+
+}
+
+void AProjectile::OnTimerExpire()
+{
+	// Destroy the projectile, not just the Collision mesh in OnHit(), else it is using memory for nothing
+	Destroy();
 }
 
 

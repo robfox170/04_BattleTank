@@ -13,7 +13,7 @@ UTankTrack::UTankTrack()
 
 void UTankTrack::BeginPlay()
 {
-	OnComponentHit.AddDynamic(this, &UTankTrack::OnHit);
+	OnComponentHit.AddDynamic(this, &UTankTrack::OnHit); // delegate method OnHit for the hit event
 }
 
 // Apply side force only when the tank touches the ground, i.e. when it is hit by it
