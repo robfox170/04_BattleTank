@@ -4,6 +4,8 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "PhysicsEngine/RadialForceComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/DamageType.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
 
@@ -65,6 +67,15 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 	// Set the ImpactBlast component as root in order to destroy the Projectile mesh on impact and avoid it lingering in the world
 	SetRootComponent(ImpactBlast);
 	CollisionMesh->DestroyComponent();
+
+	UGameplayStatics::ApplyRadialDamage(
+		this,
+		ProjectileDamage,
+		GetActorLocation(),
+		ExplosionForce->Radius, // For consistancy
+		UDamageType::StaticClass(),
+		TArray<AActor*>() // Empty array as place holder, can be filled with actors to be left undamaged
+	);
 
 	FTimerHandle Timer; // not used, but needed as out parameter
 	GetWorld()->GetTimerManager().SetTimer(Timer, this, &AProjectile::OnTimerExpire, DestroyDelay, false);
