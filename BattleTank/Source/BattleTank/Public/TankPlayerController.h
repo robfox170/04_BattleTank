@@ -16,16 +16,18 @@ class BATTLETANK_API ATankPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
-public:
-	virtual void BeginPlay() override;
-
-	virtual void Tick(float DeltaTime) override;
 
 protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Setup")
 	void FoundAimingComponent(UTankAimingComponent* AimCompRef); // With the above UFunction type, no need to define this method
 
 private:
+	virtual void BeginPlay() override;
+
+	virtual void SetPawn(APawn* InPawn) override; // called when gets possessed
+
+	virtual void Tick(float DeltaTime) override;
+
 	UPROPERTY(EditDefaultsOnly)
 	float CrossHairXLocation = 0.5;
 
@@ -38,6 +40,10 @@ private:
 	void AimTowardsCrosshair();
 
 	bool GetSightRayHitLocation(FVector& OutHitLocation) const;
+
+	UFUNCTION()
+	void OnPossessedTankDeath();
+
 
 	/// Alternative method using APlayerController::GetHitResultAtScreenPosition instead of GetWorld->LineTraceSingleByChannel
 	/// to obtain HitLocation directly, without helper methods GetLookDirection and GetLookVectorHitLocation
