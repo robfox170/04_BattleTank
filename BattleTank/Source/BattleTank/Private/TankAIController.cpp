@@ -26,7 +26,8 @@ void ATankAIController::SetPawn(APawn* InPawn) // called when gets possessed, so
 
 void ATankAIController::OnPossessedTankDeath()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Tank died"))
+	if (!GetPawn()) {return;}// No ensure here to avoid an insertion firing at runtime
+	GetPawn()->DetachFromControllerPendingDestroy();
 
 }
 

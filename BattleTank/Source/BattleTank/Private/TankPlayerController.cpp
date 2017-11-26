@@ -30,8 +30,7 @@ void ATankPlayerController::SetPawn(APawn* InPawn) // called when gets possessed
 
 void ATankPlayerController::OnPossessedTankDeath()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Tank died"))
-
+	StartSpectatingOnly();
 }
 
 

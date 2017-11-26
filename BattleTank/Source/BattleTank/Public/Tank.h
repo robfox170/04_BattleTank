@@ -21,7 +21,7 @@ public:
 
 	// Return current health as a percentage of starting health, between 0 and 1
 	UFUNCTION(BlueprintPure, Category = "Health") // BlueprintPure is like C++ const, it doesn't affect the owning object and it's members
-	float GetHealthPercent();
+		float GetHealthPercent();
 
 	FTankDelegate OnDeath;
 
@@ -29,9 +29,14 @@ private:
 	// Sets default values for this pawn's properties
 	ATank();
 
+	virtual void BeginPlay() override;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	int32 StartingHealth = 100;
 
+	// if CurrentHealth is set to StartingHealth here, it's too soon and
+	// a change of the latter's value in Tank_BP won't update CurrentHealth.
+	// It needs to be initialized in BeginPlay()
 	UPROPERTY(VisibleAnywhere, Category = "Health")
-	int32 CurrentHealth = StartingHealth;
+	int32 CurrentHealth;
 };
