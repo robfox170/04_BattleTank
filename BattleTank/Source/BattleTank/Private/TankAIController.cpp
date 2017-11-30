@@ -44,12 +44,15 @@ void ATankAIController::Tick(float DeltaTime)
 
 		auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
 
+		// TODO: to be fair, AI tanks should also only be able to shoot on sight, so implement smtg with Linetracing?
 		AimingComponent->AimAt(PlayerTank->GetActorLocation());
+		auto ShootingDistance = FVector::Dist(ControlledTank->GetActorLocation(), PlayerTank->GetActorLocation());
 
-		if (AimingComponent->GetFiringState() == EFiringState::Locked) // TODO: put this statement in Fire() method directly, so that all tanks are equal
+		if (AimingComponent->GetFiringState() == EFiringState::Locked // TODO: put this statement in Fire() method directly, so that all tanks are equal
+			&& ShootingDistance <= AimingComponent->GetMaxShootingRange()
+		)
 		{
 			AimingComponent->Fire();
-
 		}
 }
 

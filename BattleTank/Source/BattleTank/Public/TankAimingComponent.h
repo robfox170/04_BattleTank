@@ -38,6 +38,8 @@ public:
 
 	void AimAt(FVector HitLocation);
 
+	float GetMaxShootingRange();
+
 	EFiringState GetFiringState() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Firing")
@@ -67,10 +69,13 @@ private:
 	TSubclassOf<AProjectile> ProjectileBlueprint;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Firing")
+	float MaxShootingRange = 200000; // 2 km
+
+	UPROPERTY(EditDefaultsOnly, Category = "Firing")
 	float LaunchSpeed = 8000; // 80 m/s or 288 km/h
 
 	UPROPERTY(EditDefaultsOnly, Category = "Firing")
-	float ReloadTimeInSeconds =3;
+	float ReloadTimeInSeconds = 4;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Firing")
 	int32 RoundsLeft = 20;

@@ -21,8 +21,9 @@ public:
 
 	// Return current health as a percentage of starting health, between 0 and 1
 	UFUNCTION(BlueprintPure, Category = "Health") // BlueprintPure is like C++ const, it doesn't affect the owning object and it's members
-		float GetHealthPercent();
+	float GetHealthPercent();
 
+	UPROPERTY(BlueprintAssignable)
 	FTankDelegate OnDeath;
 
 private:

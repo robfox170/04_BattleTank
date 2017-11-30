@@ -21,6 +21,9 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category = "Setup")
 	void FoundAimingComponent(UTankAimingComponent* AimCompRef); // With the above UFunction type, no need to define this method
 
+	UFUNCTION(BlueprintCallable, Category = "Setup")
+	void OnPossessedTankDeath();
+
 private:
 	virtual void BeginPlay() override;
 
@@ -34,16 +37,11 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	float CrossHairYLocation = 0.33333;
 
-	UPROPERTY(EditDefaultsOnly)
-	float LineTraceRange = 1000000; // 10 km
+	float LineTraceRange; // Gets set to TankAimingComponent's MaxShootingRange in BeginPlay()
 	
 	void AimTowardsCrosshair();
 
 	bool GetSightRayHitLocation(FVector& OutHitLocation) const;
-
-	UFUNCTION()
-	void OnPossessedTankDeath();
-
 
 	/// Alternative method using APlayerController::GetHitResultAtScreenPosition instead of GetWorld->LineTraceSingleByChannel
 	/// to obtain HitLocation directly, without helper methods GetLookDirection and GetLookVectorHitLocation
@@ -53,6 +51,6 @@ private:
 
 	bool GetLookVectorHitLocation(FVector LookDirection, FVector& OutHitLocation) const;
 
-	
+
 	
 };

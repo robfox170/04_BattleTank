@@ -13,6 +13,7 @@ void ATankPlayerController::BeginPlay()
 	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
 	//if (!ensure(AimingComponent)) { return; }
 	FoundAimingComponent(AimingComponent);
+	LineTraceRange = AimingComponent->GetMaxShootingRange();
 }
 
 void ATankPlayerController::SetPawn(APawn* InPawn) // called when gets possessed, so safe place to subscribe (see below). BeginPlay() may race (be too early)
@@ -32,7 +33,6 @@ void ATankPlayerController::OnPossessedTankDeath()
 {
 	StartSpectatingOnly();
 }
-
 
 void ATankPlayerController::Tick(float DeltaTime)
 {

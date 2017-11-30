@@ -56,6 +56,11 @@ void UTankAimingComponent::Initialize(UTankBarrel* BarrelToSet, UTankTurret* Tur
 	Turret = TurretToSet;
 }
 
+float UTankAimingComponent::GetMaxShootingRange()
+{
+	return MaxShootingRange;
+}
+
 EFiringState UTankAimingComponent::GetFiringState() const
 {
 	return FiringState;
@@ -111,6 +116,7 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 	}
 	// if no solution is found do nothing
 }
+
 
 void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 {	
