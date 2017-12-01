@@ -6,6 +6,8 @@
 #include "AIController.h"
 #include "TankAIController.generated.h"
 
+class ATank;
+
 /**
  * 
  */
@@ -20,6 +22,8 @@ protected:
 	float AcceptanceRadius = 8000;
 
 private:
+	ATank* PlayerTank;
+
 	virtual void BeginPlay() override;
 
 	virtual void SetPawn(APawn* InPawn) override; // called when gets possessed
@@ -28,6 +32,10 @@ private:
 
 	UFUNCTION()
 	void OnPossessedTankDeath();
+
+	void SeekAndDestroy();
+
+	bool IsPlayerTankInSight();
 
 
 	

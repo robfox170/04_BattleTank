@@ -3,12 +3,16 @@
 #include "TankAIController.h"
 #include "TankAimingComponent.h"
 #include "Tank.h"
+//#include "Engine/World.h"
 // also depends on MovementComponent via pathfinding system in MovetoActor()
 
 
 void ATankAIController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	PlayerTank = Cast<ATank>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	if (!ensure(PlayerTank)) { return; }
 }
 
 void ATankAIController::SetPawn(APawn* InPawn) // called when gets possessed, so safe place to subscribe (see below). BeginPlay() may race (be too early)
@@ -16,7 +20,7 @@ void ATankAIController::SetPawn(APawn* InPawn) // called when gets possessed, so
 	Super::SetPawn(InPawn);
 	if (InPawn)
 	{
-		auto PossessedTank = Cast<ATank>(InPawn);
+		auto PossessedTank = Cast<ATank>(InPawn); // must be cast to ATank, because OnDeath is one of it's properties, not available - of course - on the inherited Pawn
 		if (!ensure(PossessedTank)) { return; }
 
 		// Subscribe our local method to the tank's death event
@@ -28,32 +32,50 @@ void ATankAIController::OnPossessedTankDeath()
 {
 	if (!GetPawn()) {return;}// No ensure here to avoid an insertion firing at runtime
 	GetPawn()->DetachFromControllerPendingDestroy();
-
 }
 
 void ATankAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	 
+	if (PlayerTank->GetHealthPercent() > 0) // PlayerTank alive, seek and destroy it!
+	{
+		SeekAndDestroy();
+	}
+}
 
-	auto PlayerTank = GetWorld()->GetFirstPlayerController()->GetPawn();
-	auto ControlledTank = GetPawn();
+void ATankAIController::SeekAndDestroy()
+{
+	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+	if (!ensure(AimingComponent)) { return; }
 
-	if (!ensure(PlayerTank && ControlledTank)) { return; } 
-
+	// AI Tanks aim and move towards the playertank only...
+	if (IsPlayerTankInSight())
+	{
 		MoveToActor(PlayerTank, AcceptanceRadius); // calls RequestDirectMove() in the TankMovementComponent
 
-		auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
-
-		// TODO: to be fair, AI tanks should also only be able to shoot on sight, so implement smtg with Linetracing?
 		AimingComponent->AimAt(PlayerTank->GetActorLocation());
-		auto ShootingDistance = FVector::Dist(ControlledTank->GetActorLocation(), PlayerTank->GetActorLocation());
+	}
 
-		if (AimingComponent->GetFiringState() == EFiringState::Locked // TODO: put this statement in Fire() method directly, so that all tanks are equal
-			&& ShootingDistance <= AimingComponent->GetMaxShootingRange()
+	// Fire only if within shooting range, using the same linetracing limit as the player tank
+	auto ShootingDistance = FVector::Dist(GetPawn()->GetActorLocation(), PlayerTank->GetActorLocation());
+	if (AimingComponent->GetFiringState() == EFiringState::Locked // TODO: put this statement in Fire() method directly, so that all tanks are equal
+		&& ShootingDistance <= AimingComponent->GetMaxShootingRange()
 		)
-		{
-			AimingComponent->Fire();
-		}
+	{
+		AimingComponent->Fire();
+	}
+}
+
+bool ATankAIController::IsPlayerTankInSight()
+{
+	FHitResult HitResult;
+	return GetWorld()->LineTraceSingleByChannel(
+		HitResult,
+		GetPawn()->GetActorLocation(),
+		PlayerTank->GetActorLocation(),
+		ECollisionChannel::ECC_Visibility
+	);
 }
 
 

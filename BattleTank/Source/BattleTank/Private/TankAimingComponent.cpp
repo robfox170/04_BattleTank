@@ -117,7 +117,7 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 	// if no solution is found do nothing
 }
 
-
+// TODO: add "precision" shooting button (Left Trigger?), reducing yaw and pitch percentage
 void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 {	
 	if (!ensure(Barrel && Turret)) { return; } // or if(!ensure(Barrel) || !ensure(Turret)) to have separate messages

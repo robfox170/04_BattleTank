@@ -9,6 +9,7 @@ void UTankMovementComponent::Initialize(UTankTrack* LeftTrackToSet, UTankTrack* 
 	RightTrack = RightTrackToSet;
 }
 
+// TODO: add 0 to 1 speed percentage, blueprint editable, like GetHealthPercent()
 void UTankMovementComponent::IntendMoveForward(float Throw)
 {
 	if (!ensure(LeftTrack && RightTrack)) { return; } // or if(!ensure(LeftTrack) || !ensure(RightTrack)) to have separate messages

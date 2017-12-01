@@ -6,7 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "TankPlayerController.generated.h" // Must be the last include
 
-//class UTankAimingComponent;
+//class UTankAimingComponent; // No need to add this because of the BlueprintImplementableEvent FoundAimingComponent below
 
 /**
  * Responsible for helping the player aim
