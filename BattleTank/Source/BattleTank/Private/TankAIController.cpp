@@ -74,7 +74,7 @@ bool ATankAIController::IsPlayerTankInSight()
 		HitResult,
 		GetPawn()->GetActorLocation(),
 		PlayerTank->GetActorLocation(),
-		ECollisionChannel::ECC_Visibility
+		ECollisionChannel::ECC_Camera
 	);
 }
 

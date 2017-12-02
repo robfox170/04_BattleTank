@@ -3,6 +3,7 @@
 #include "TankPlayerController.h"
 #include "TankAimingComponent.h"
 #include "Tank.h"
+#include "CollisionQueryParams.h"
 
 
 void ATankPlayerController::BeginPlay()
@@ -99,7 +100,7 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation, FString
 	FHitResult HitResult;
 	bool bHit = GetHitResultAtScreenPosition(
 		ScreenLocation,
-		ECollisionChannel::ECC_Visibility,
+		ECollisionChannel::ECC_Camera,
 		false,
 		HitResult
 	);
@@ -123,16 +124,18 @@ bool ATankPlayerController::GetLookDirection(FVector2D ScreenLocation, FVector& 
 	);
 }
 
+// TODO: find reason for trembling barrel when trying to aim too low and overlap with sight. Maybe turn off tracing if below certain camera motion limit?
 bool ATankPlayerController::GetLookVectorHitLocation(FVector LookDirection, FVector& HitLocation) const
 {
 	FHitResult HitResult;
 	auto StartLocation = PlayerCameraManager->GetCameraLocation();
 	auto EndLocation = StartLocation + (LookDirection * LineTraceRange);
+
 	if (GetWorld()->LineTraceSingleByChannel(
 			HitResult,
 			StartLocation,
 			EndLocation,
-			ECollisionChannel::ECC_Visibility
+			ECollisionChannel::ECC_Camera
 		)
 	)
 	{
