@@ -49,8 +49,11 @@ void ATankAIController::SeekAndDestroy()
 	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
 	if (!ensure(AimingComponent)) { return; }
 
+	// TODO: add a flag bSeekInSightOnly as an UPROPERTY option, to make it possible to remove this handicap for AI tanks, 
+	// because the player has the advantage of positioning his tank according to the AI tanks' healthbars, 
+	// while the AI tanks won't go after him if he remains out of sight
 	// AI Tanks aim and move towards the playertank only...
-	if (IsPlayerTankInSight())
+	if (IsPlayerTankInSight()) 
 	{
 		MoveToActor(PlayerTank, AcceptanceRadius); // calls RequestDirectMove() in the TankMovementComponent
 

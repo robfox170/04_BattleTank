@@ -32,4 +32,8 @@ private:
 
 	UTankTrack* LeftTrack = nullptr;
 	UTankTrack* RightTrack = nullptr;
+
+	// To give the player an advantage, AI Tanks can be slowed down
+	UPROPERTY(EditAnywhere, Category = "Moving", meta = (ClampMin = "0", ClampMax = "100"))
+	float ThrottlePercent = 100;
 };

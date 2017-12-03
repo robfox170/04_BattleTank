@@ -124,7 +124,7 @@ bool ATankPlayerController::GetLookDirection(FVector2D ScreenLocation, FVector& 
 	);
 }
 
-// TODO: find reason for trembling barrel when trying to aim too low and overlap with sight. Maybe turn off tracing if below certain camera motion limit?
+// TODO: find reason for trembling barrel when trying to aim too low and overlap with sight. 
 bool ATankPlayerController::GetLookVectorHitLocation(FVector LookDirection, FVector& HitLocation) const
 {
 	FHitResult HitResult;
