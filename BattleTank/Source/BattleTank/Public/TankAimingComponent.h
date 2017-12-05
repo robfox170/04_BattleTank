@@ -34,6 +34,12 @@ public:
 	void Initialize(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet);
 
 	UFUNCTION(BlueprintCallable, Category = "Firing")
+	void PrecisionAim(bool bShowPrecisionSight);
+	
+	UFUNCTION(BlueprintCallable, Category = "Firing")
+	bool GetPrecisionSightVisibility();
+
+	UFUNCTION(BlueprintCallable, Category = "Firing")
 	void Fire();
 
 	void AimAt(FVector HitLocation);
@@ -64,6 +70,8 @@ private:
 	bool IsBarrelMoving();
 
 	FVector AimDirection;
+
+	bool bIsPrecisionSightVisible = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	TSubclassOf<AProjectile> ProjectileBlueprint;

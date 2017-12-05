@@ -71,6 +71,16 @@ int32 UTankAimingComponent::GetRoundsLeft() const
 	return RoundsLeft;
 }
 
+bool UTankAimingComponent::GetPrecisionSightVisibility()
+{
+	return bIsPrecisionSightVisible;
+}
+
+void UTankAimingComponent::PrecisionAim(bool bShowPrecisionSight)
+{	
+		bIsPrecisionSightVisible = bShowPrecisionSight;
+}
+
 
 void UTankAimingComponent::Fire()
 {

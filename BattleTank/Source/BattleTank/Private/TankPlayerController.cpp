@@ -132,14 +132,20 @@ bool ATankPlayerController::GetLookVectorHitLocation(FVector LookDirection, FVec
 	auto EndLocation = StartLocation + (LookDirection * LineTraceRange);
 
 	if (GetWorld()->LineTraceSingleByChannel(
-			HitResult,
-			StartLocation,
-			EndLocation,
-			ECollisionChannel::ECC_Camera
+		HitResult,
+		StartLocation,
+		EndLocation,
+		ECollisionChannel::ECC_Camera
 		)
 	)
 	{
 		HitLocation = HitResult.Location;
+		//UE_LOG(LogTemp, Warning, TEXT("Hit Object: %s"), *(HitResult.GetActor()->GetName()))
+		//if (HitResult.GetActor() == GetPawn())
+		//{
+		//	return false;
+		//}
+		//else 
 		return true;
 	}
 	// Set default coordinates to 0 as a security in case the results are random when nothing is hit (sky for example), 
