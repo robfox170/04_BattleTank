@@ -127,7 +127,6 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 	// if no solution is found do nothing
 }
 
-// TODO: add "precision" shooting button (Left Trigger?), reducing yaw and pitch percentage, or same as barrel / turret speed?
 void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 {	
 	if (!ensure(Barrel && Turret)) { return; } // or if(!ensure(Barrel) || !ensure(Turret)) to have separate messages
@@ -135,6 +134,7 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
 	auto DeltaRotator = AimAsRotator - BarrelRotator;
 	Barrel->Elevate(DeltaRotator.Pitch); 
+	
 	// the barrel position is used for the turret too, so no need to have a separate MoveTurretTowards() method
 	if (FMath::Abs(DeltaRotator.Yaw) < 180) // always yaw the shortest way
 	{
@@ -144,6 +144,7 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 	{
 		Turret->Rotate(-DeltaRotator.Yaw);
 	}
+	
 }
 
 bool UTankAimingComponent::IsBarrelMoving()
