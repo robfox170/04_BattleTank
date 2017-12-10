@@ -127,24 +127,28 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 	// if no solution is found do nothing
 }
 
+// TODO: find reason for turret shudders. 
+// DeltaRotator.Yaw seems to be the culprit because it alternates from minus to plus for a single AimDirection, 
+// hence the turret tries to move in both directions at the same time and shudders
+
 void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
-{	
+{
 	if (!ensure(Barrel && Turret)) { return; } // or if(!ensure(Barrel) || !ensure(Turret)) to have separate messages
 	auto AimAsRotator = AimDirection.Rotation();
 	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
 	auto DeltaRotator = AimAsRotator - BarrelRotator;
-	Barrel->Elevate(DeltaRotator.Pitch); 
-	
+	Barrel->Elevate(DeltaRotator.Pitch);
+
 	// the barrel position is used for the turret too, so no need to have a separate MoveTurretTowards() method
 	if (FMath::Abs(DeltaRotator.Yaw) < 180) // always yaw the shortest way
-	{
+	{ 
 		Turret->Rotate(DeltaRotator.Yaw);
+	
 	}
 	else
 	{
 		Turret->Rotate(-DeltaRotator.Yaw);
 	}
-	
 }
 
 bool UTankAimingComponent::IsBarrelMoving()

@@ -91,10 +91,6 @@ private:
 	double LastFireTime = 0;
 
 	UTankBarrel* Barrel = nullptr;
-	UTankTurret* Turret = nullptr;
-
-
-
-		
+	UTankTurret* Turret = nullptr;	
 	
 };

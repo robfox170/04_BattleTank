@@ -17,6 +17,7 @@ class BATTLETANK_API ATankPlayerController : public APlayerController
 	GENERATED_BODY()
 
 protected:
+	// Called in blueprint to create an AimingComponent reference for the Player UI BP widget
 	UFUNCTION(BlueprintImplementableEvent, Category = "Setup")
 	void FoundAimingComponent(UTankAimingComponent* AimCompRef); // With the above UFunction type, no need to define this method
 

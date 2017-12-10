@@ -49,20 +49,17 @@ void ATankAIController::SeekAndDestroy()
 	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
 	if (!ensure(AimingComponent)) { return; }
 
-	// TODO: add a flag bSeekInSightOnly as an UPROPERTY option, to make it possible to remove this handicap for AI tanks, 
-	// because the player has the advantage of positioning his tank according to the AI tanks' healthbars, 
-	// while the AI tanks won't go after him if he remains out of sight
-	// AI Tanks aim and move towards the playertank only...
-	if (IsPlayerTankInSight()) 
-	{
-		MoveToActor(PlayerTank, AcceptanceRadius); // calls RequestDirectMove() in the TankMovementComponent
+	MoveToActor(PlayerTank, AcceptanceRadius);
 
+	// To be fair, can only aim on sight, just like the playertank
+	if(IsPlayerTankInSight())
+	{
 		AimingComponent->AimAt(PlayerTank->GetActorLocation());
 	}
 
 	// Fire only if within shooting range, using the same linetracing limit as the player tank
 	auto ShootingDistance = FVector::Dist(GetPawn()->GetActorLocation(), PlayerTank->GetActorLocation());
-	if (AimingComponent->GetFiringState() == EFiringState::Locked // TODO: put this statement in Fire() method directly, so that all tanks are equal
+	if (AimingComponent->GetFiringState() == EFiringState::Locked // TODO: put this statement in Fire() method directly, so that all tanks are equal?
 		&& ShootingDistance <= AimingComponent->GetMaxShootingRange()
 		)
 	{
@@ -70,15 +67,28 @@ void ATankAIController::SeekAndDestroy()
 	}
 }
 
+
 bool ATankAIController::IsPlayerTankInSight()
 {
 	FHitResult HitResult;
-	return GetWorld()->LineTraceSingleByChannel(
+	//bool bHit =
+	GetWorld()->LineTraceSingleByChannel(
 		HitResult,
-		GetPawn()->GetActorLocation(),
+		GetPawn()->GetActorLocation() + FVector(0,0,500), // approx. same height as PlayerTank 3rd person camera
 		PlayerTank->GetActorLocation(),
 		ECollisionChannel::ECC_Camera
 	);
+
+	//if (bHit) UE_LOG(LogTemp, Warning, TEXT("Hit Object: %s"), *(HitResult.GetActor()->GetName()))
+
+	if (HitResult.GetActor() == PlayerTank)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 

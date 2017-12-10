@@ -35,8 +35,5 @@ private:
 
 	void SeekAndDestroy();
 
-	bool IsPlayerTankInSight();
-
-
-	
+	bool IsPlayerTankInSight();	
 };

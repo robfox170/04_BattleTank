@@ -9,10 +9,11 @@
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	// TODO: sort out what needs to be protected, the Pawn, the AimingComponent, in BeginPlay too or only in AimTowardsCrosshair?
-	//if (!ensure(GetPawn())) { return; } 
+	if (!ensure(GetPawn())) { return; } 
 	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
-	//if (!ensure(AimingComponent)) { return; }
+	if (!ensure(AimingComponent)) { return; }
+	// Call in blueprint to create an AimingComponent reference for the Player UI BP widget, 
+	// because if done in the blueprint BeginPlay(), it's not sure the AimingComponent is ready
 	FoundAimingComponent(AimingComponent);
 	LineTraceRange = AimingComponent->GetMaxShootingRange();
 }
@@ -62,8 +63,13 @@ void ATankPlayerController::AimTowardsCrosshair()
 	//// Method call for alternative GetSightRayHitLocation overload using GetHitResultAtScreenPosition...
 	//FVector HitLocation = FVector(0);
 	//FString ObjectHit = "Nothing";
-	//GetSightRayHitLocation(HitLocation, ObjectHit);
-	//UE_LOG(LogTemp, Warning, TEXT("Object in range: %s Location: %s"), *ObjectHit, *HitLocation.ToString());
+	//bool bGotHitLocation = GetSightRayHitLocation(HitLocation, ObjectHit);
+	//if (bGotHitLocation)
+	//{
+	//	AimingComponent->AimAt(HitLocation);
+	//}
+	////UE_LOG(LogTemp, Warning, TEXT("Object in range: %s Location: %s"), *ObjectHit, *HitLocation.ToString());
+
 
 
 }
@@ -124,7 +130,6 @@ bool ATankPlayerController::GetLookDirection(FVector2D ScreenLocation, FVector& 
 	);
 }
 
-// TODO: find reason for trembling barrel when trying to aim too low and overlap with sight. 
 bool ATankPlayerController::GetLookVectorHitLocation(FVector LookDirection, FVector& HitLocation) const
 {
 	FHitResult HitResult;
