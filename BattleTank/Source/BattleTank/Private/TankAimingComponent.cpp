@@ -127,10 +127,6 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 	// if no solution is found do nothing
 }
 
-// TODO: find reason for turret shudders. 
-// DeltaRotator.Yaw seems to be the culprit because it alternates from minus to plus for a single AimDirection, 
-// hence the turret tries to move in both directions at the same time and shudders
-
 void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 {
 	if (!ensure(Barrel && Turret)) { return; } // or if(!ensure(Barrel) || !ensure(Turret)) to have separate messages
@@ -139,16 +135,32 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 	auto DeltaRotator = AimAsRotator - BarrelRotator;
 	Barrel->Elevate(DeltaRotator.Pitch);
 
-	// the barrel position is used for the turret too, so no need to have a separate MoveTurretTowards() method
-	if (FMath::Abs(DeltaRotator.Yaw) < 180) // always yaw the shortest way
-	{ 
-		Turret->Rotate(DeltaRotator.Yaw);
-	
-	}
-	else
-	{
-		Turret->Rotate(-DeltaRotator.Yaw);
-	}
+	// TODO: find reason for turret shudders. 
+	// DeltaRotator.Yaw seems to be the culprit because it alternates from minus to plus for a single AimDirection, 
+	// hence the turret tries to move in both directions at the same time and shudders
+
+	// In the meantime, with a crossproduct, as used for the tank movement, it works just fine!
+	auto RightMove = FVector::CrossProduct(Barrel->GetForwardVector(), AimDirection).Z;
+
+	Turret->Rotate(RightMove * 10); // multiplied by 10, because otherwise was too slow, and is clamped from -1 to 1 in the TankTurret's Rotate() anyway
+
+	//// The barrel position is used for the turret too, so no need to have a separate MoveTurretTowards() method
+	//if (FMath::Abs(DeltaRotator.Yaw) < 180) // always yaw the shortest way
+	//{ 
+	//	Turret->Rotate(DeltaRotator.Yaw);
+	//
+	//}
+	//else
+	//{
+	//	Turret->Rotate(-DeltaRotator.Yaw);
+	//}
+
+		//UE_LOG(LogTemp, Warning, TEXT("AimAsRotator is: %s"), *(AimAsRotator.ToString()))
+		//UE_LOG(LogTemp, Warning, TEXT("BarrelRotator is: %s"), *(BarrelRotator.ToString()))
+		//UE_LOG(LogTemp, Warning, TEXT("DeltaRotator is: %s"), *(DeltaRotator.ToString()))
+		//UE_LOG(LogTemp, Warning, TEXT("DeltaRotator Yaw Normalized is: %f"), DeltaRotator.GetNormalized().Yaw)
+
+
 }
 
 bool UTankAimingComponent::IsBarrelMoving()
